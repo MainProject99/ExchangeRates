@@ -30,7 +30,7 @@ namespace RESTfulAPIs
         {
                 
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),x=>x.MigrationsAssembly("DLL")));
+                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"),x=>x.MigrationsAssembly("DLL")));
 
             services.AddControllers();
         }
