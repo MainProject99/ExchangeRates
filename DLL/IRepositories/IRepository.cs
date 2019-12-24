@@ -7,12 +7,14 @@ namespace DLL.IRepositories
 {
     public interface IRepository<T> where T : class
     {
-        T Get(int id);
+        T GetById(int id);
+        IEnumerable<T> GetAll();
+        IQueryable<T> Get(string includeProperties = "");
         T Insert(T entity);
         T Update(T entity);
         T Delete(T entity);
 
-        IQueryable<T> Get(string includeProperties = "");
+      
 
     }
 }

@@ -11,7 +11,7 @@ namespace DLL.Repositiries
     {
 
         protected readonly ApplicationDbContext Database;
-        protected readonly DbSet<T> entities;
+        protected readonly DbSet<T> entities;   
 
         public Repository(ApplicationDbContext context)
         {
@@ -20,7 +20,7 @@ namespace DLL.Repositiries
         }
 
 
-        public T Insert(T entity)
+        public virtual T Insert(T entity)
         {
             if (entity == null)
             {
@@ -30,7 +30,7 @@ namespace DLL.Repositiries
             return entity;
         }
 
-        public T Update(T entity)
+        public virtual T Update(T entity)
         {
             if (entity == null)
                 throw new NotImplementedException();
@@ -39,7 +39,7 @@ namespace DLL.Repositiries
         }
 
 
-        public IQueryable<T> Get(string includeProperties = "")
+        public virtual IQueryable<T> Get(string includeProperties = "")
         {
             IQueryable<T> query = entities;
             foreach (var includeProperty in
@@ -50,13 +50,16 @@ namespace DLL.Repositiries
             return query;
         }
 
-
-        public T Get(int id)
+        public virtual IEnumerable<T> GetAll()
+        {
+            return entities.ToList();
+        }
+        public virtual T GetById(int id)
         {
             return entities.Find(id);
         }
 
-        public T Delete(T entity)
+        public virtual T Delete(T entity)
         {
             if (entity == null)
             {
