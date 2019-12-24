@@ -15,6 +15,5 @@ namespace DLL
         {
             Database.Migrate();
         }
-        
     }
 }
