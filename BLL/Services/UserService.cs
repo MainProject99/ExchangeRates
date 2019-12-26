@@ -26,7 +26,7 @@ namespace BLL.Services
 
             var user = Database.Users.FirstOrDefault(x => x.Email == email);
 
-            // check if username exists
+            // check if username exists     
             if (user == null)
                 return null;
 

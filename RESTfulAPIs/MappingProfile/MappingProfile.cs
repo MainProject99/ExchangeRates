@@ -12,6 +12,7 @@ namespace RESTfulAPIs.MappingProfile
         public MappingProfile()
         {
             CreateMap<RegisterDto, User>();
+            CreateMap<UpdateDto, User>();
         }
     }
 }

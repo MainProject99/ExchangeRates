@@ -37,18 +37,24 @@ namespace RESTfulAPIs.Controllers
             _mapper = mapper;
             _appSettings = appSettings.Value;
         }
-
+        /// <summary>
+        /// This method allows register user
+        /// </summary>
+        /// <param name="registerModel">Required</param>
+        /// <returns></returns>
+        /// <response code="200">Register valid</response> 
+        /// <response code="400">If register process failed</response>
         [AllowAnonymous]
         [Microsoft.AspNetCore.Mvc.HttpPost("Register")]
-        public IActionResult Register(RegisterDto model)
+        public IActionResult Register(RegisterDto registerModel)
         {
-            // map model to entity
-            var user = _mapper.Map<User>(model);
+            // map authmodel to entity
+            var user = _mapper.Map<User>(registerModel);
 
             try
             {
                 // create user
-                _userService.CreateUser(user, model.Password);
+                _userService.CreateUser(user, registerModel.Password);
                 return Ok();
             }
             catch (AppException ex)
@@ -57,11 +63,18 @@ namespace RESTfulAPIs.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+        /// <summary>
+        /// This method allows to log in to the API and generate an authentication token.
+        /// </summary>
+        /// <param name="authModel">Required</param>
+        /// <returns>UserInfo authmodel</returns>
+        /// <response code="200">Return UserInfo authmodel</response>
+        /// <response code="400">If login process failed</response>
         [AllowAnonymous]
         [Microsoft.AspNetCore.Mvc.HttpPost("Authenticate")]//("authenticate")]
-        public IActionResult Authenticate(AuthenticateDto model)
+        public IActionResult Authenticate(AuthenticateDto authModel)
         {
-            var user = _userService.Authenticate(model.Email, model.Password);
+            var user = _userService.Authenticate(authModel.Email, authModel.Password);
 
             if (user == null)
                 return BadRequest(new { message = "Username or password is incorrect" });
@@ -90,5 +103,32 @@ namespace RESTfulAPIs.Controllers
                 Token = tokenString
             });
         }
+        /// <summary>
+        /// This method is for change password
+        /// </summary>
+        /// <param name="updateModel">Required</param>
+        /// <returns></returns>
+        /// <response code="200">Data change succesful</response> 
+        /// <response code="400">If data change process failed</response>
+        [Microsoft.AspNetCore.Mvc.HttpPut("{id}")]
+        public IActionResult Update(int id, UpdateDto updateModel)
+        {
+            // map updateModel to entity and set id
+            var user = _mapper.Map<User>(updateModel);
+            user.Id = id;
+
+            try
+            {
+                // update user 
+                _userService.UpdateUser(user, updateModel.Password);
+                return Ok();
+            }
+            catch (AppException ex)
+            {
+                // return error message if there was an exception
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
     }
 }
