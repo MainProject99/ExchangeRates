@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using MyWebAPI.Helpers;
 
 namespace DLL.Repositiries
 {
@@ -23,18 +22,15 @@ namespace DLL.Repositiries
             return Database.Users.Find(id);
         }
 
-        public User Insert(User user, string password)
+        public User Insert(User user)
         {
-
             Database.Users.Add(user);
             Database.SaveChanges();
 
             return user;
         }
         public void Update(User user)
-        {
-            
-
+        {            
             Database.Users.Update(user);
             Database.SaveChanges();
         }

@@ -19,6 +19,11 @@ using BLL.Services;
 using DLL.Repositiries;
 using DLL.IRepositories;
 using Microsoft.Extensions.DependencyInjection;
+using BLL.Helpers;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Web.Http;
 
 namespace RESTfulAPIs
 {
@@ -37,6 +42,51 @@ namespace RESTfulAPIs
                 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"),x=>x.MigrationsAssembly("DLL")));
+
+            #region Jwt token
+            // configure strongly typed settings objects
+            var appSettingsSection = Configuration.GetSection("AppSettings");
+            services.Configure<AppSettings>(appSettingsSection);
+
+            // configure jwt authentication
+            var appSettings = appSettingsSection.Get<AppSettings>();
+            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x =>
+            {
+                x.Events = new JwtBearerEvents
+                {
+                    OnTokenValidated = context =>
+                    {
+                        var userService = context.HttpContext.RequestServices.GetRequiredService<IUserRepository>(); //RequestServices.GetRequiredService<IUserService>();
+                        var userId = int.Parse(context.Principal.Identity.Name);
+                        var user = userService.GetById(userId);
+                        if (user == null)
+                        {
+                            // return unauthorized if user no longer exists
+                            context.Fail("Unauthorized");
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
+            #endregion
+
+
+
             #region Configure our dependecies...
             // configure DI for application services
             services.AddScoped<IUserService,UserService>();
@@ -67,15 +117,19 @@ namespace RESTfulAPIs
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-            }
-
-            app.UseHttpsRedirection();
-
+            }                       
             app.UseRouting();
 
+            app.UseHttpsRedirection();
+            
+            app.UseStaticFiles();
+
+
+            app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseStaticFiles();
+
+          
 
             app.UseEndpoints(endpoints =>
             {

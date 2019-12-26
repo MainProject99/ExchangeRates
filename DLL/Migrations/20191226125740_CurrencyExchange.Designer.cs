@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DLL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20191221104412_CurrenyRate")]
-    partial class CurrenyRate
+    [Migration("20191226125740_CurrencyExchange")]
+    partial class CurrencyExchange
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -71,8 +71,17 @@ namespace DLL.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("text");
 
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
                     b.Property<string>("Password")
                         .HasColumnType("text");
+
+                    b.Property<byte[]>("PasswordHash")
+                        .HasColumnType("bytea");
+
+                    b.Property<byte[]>("PasswordSalt")
+                        .HasColumnType("bytea");
 
                     b.HasKey("Id");
 

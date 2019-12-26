@@ -14,14 +14,30 @@ namespace BLL.Services
     {
         private readonly IUserRepository userRepository;
         private readonly ApplicationDbContext Database;
-        public UserService(IUserRepository _userRepository)
+        public UserService(IUserRepository _userRepository, ApplicationDbContext _Database)
         {
             userRepository = _userRepository;
+            Database = _Database;
         }
-        public User Authenticate(string username, string password)
+        public User Authenticate(string email, string password)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+                return null;
+
+            var user = Database.Users.FirstOrDefault(x => x.Email == email);
+
+            // check if username exists
+            if (user == null)
+                return null;
+
+            // check if password is correct
+            if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
+                return null;
+
+            // authentication successful
+            return user;
         }
+
 
         public User CreateUser (User user, string password)
         {
@@ -32,6 +48,9 @@ namespace BLL.Services
             if (Database.Users.Any(x => x.Name == user.Name))
                 throw new AppException("Username \"" + user.Name + "\" is already taken");
 
+            if (Database.Users.Any(x => x.Email == user.Email))
+                throw new AppException("Username \"" + user.Email + "\" is already taken");
+
             byte[] passwordHash, passwordSalt;
             CreatePasswordHash(password, out passwordHash, out passwordSalt);
 
@@ -41,28 +60,26 @@ namespace BLL.Services
             userRepository.Insert(user);
             return user;
         }
-        public void Update(User userParam, string password = null)
+        public void UpdateUser(User userParam, string password = null)
         {
-            var user = Database.Users.Find(userParam.Id);
+            var user = userRepository.GetById(userParam.Id);
 
             if (user == null)
                 throw new Exception("User not found");
 
-            // update username if it has changed
-            if (!string.IsNullOrWhiteSpace(userParam.Name) && userParam.Name != user.Name)
+            // update Email if it has changed
+            if (!string.IsNullOrWhiteSpace(userParam.Email) && userParam.Email != user.Email)
             {
-                // throw error if the new username is already taken
-                if (Database.Users.Any(x => x.Name == userParam.Name))
-                    throw new AppException("Username " + userParam.Name + " is already taken");
+                // throw error if the new Email is already taken
+                if (Database.Users.Any(x => x.Email == userParam.Email))
+                    throw new AppException("Username " + userParam.Email + " is already taken");
 
-                user.Name = userParam.Name;
+                user.Email = userParam.Email;
             }
 
             // update user properties if provided
             if (!string.IsNullOrWhiteSpace(userParam.Name))
                 user.Name = userParam.Name;
-
-
 
             // update password if provided
             if (!string.IsNullOrWhiteSpace(password))

@@ -9,9 +9,9 @@ namespace MyWebAPI.Controllers
 {
     [Authorize]
     [Route("[controller]")]
-    public class ValuesController : ApiController
+    public class CurrencyController : ApiController
     {
-        // GET: api/student
+        // GET: api/
         public IEnumerable<string> Get()
         {
             return new string[] { "value1", "value2" };

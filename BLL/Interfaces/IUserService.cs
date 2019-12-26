@@ -7,6 +7,9 @@ namespace BLL.Interfaces
 {
     public interface IUserService
     {
-        User Authenticate(string username, string password);
+        User Authenticate(string email, string password);
+        User CreateUser(User user, string password);
+
+        void UpdateUser(User userParam, string password = null);
     }
 }
