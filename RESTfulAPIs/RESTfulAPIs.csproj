@@ -30,8 +30,8 @@
   
 
   <ItemGroup>
-    <ProjectReference Include="..\BLL\BLL.csproj" />
-    <ProjectReference Include="..\DLL\DLL.csproj" />
+    <ProjectReference Include="..\BLL\BusinessLogicLayer.csproj" />
+    <ProjectReference Include="..\DLL\DataAccessLayer.csproj" />
     <ProjectReference Include="..\Model\Model.csproj" />
   </ItemGroup>
 
