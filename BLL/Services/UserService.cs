@@ -46,10 +46,10 @@ namespace BLL.Services
                 throw new AppException("Password is required");
 
             if (Database.Users.Any(x => x.Name == user.Name))
-                throw new AppException("Username \"" + user.Name + "\" is already taken");
+                throw new AppException($"Username { user.Name } is already taken");
 
             if (Database.Users.Any(x => x.Email == user.Email))
-                throw new AppException("Username \"" + user.Email + "\" is already taken");
+                throw new AppException($"Username {user.Email}  is already taken");
 
             byte[] passwordHash, passwordSalt;
             CreatePasswordHash(password, out passwordHash, out passwordSalt);
@@ -72,7 +72,7 @@ namespace BLL.Services
             {
                 // throw error if the new Email is already taken
                 if (Database.Users.Any(x => x.Email == userParam.Email))
-                    throw new AppException("Username " + userParam.Email + " is already taken");
+                    throw new AppException($"Username {userParam.Email} is already taken");
 
                 user.Email = userParam.Email;
             }
