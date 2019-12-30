@@ -90,6 +90,7 @@ namespace RESTfulAPIs
             #region Configure our dependecies...
             // configure DI for application services
             services.AddScoped<IUserService,UserService>();
+            services.AddScoped<ICurrencyService, CurrencyService>();
 
             // configure DI for application Repositories
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
