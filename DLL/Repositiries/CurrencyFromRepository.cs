@@ -6,7 +6,7 @@ using System.Text;
 
 namespace DLL.Repositiries
 {
-    public class CurrencyFromRepository : Repository<CurrencyFrom>, IRepository<CurrencyFrom>
+    public class CurrencyFromRepository : Repository<CurrencyFrom>, ICurrencyFromRepository
     {
         public CurrencyFromRepository(ApplicationDbContext context) : base(context)
         {

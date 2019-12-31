@@ -95,6 +95,8 @@ namespace RESTfulAPIs
             // configure DI for application Repositories
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<ICurrencyRepository,CurrencyRepository>();
+            services.AddTransient<ICurrencyFromRepository,CurrencyFromRepository>();
             #endregion
 
             services.AddControllers();
