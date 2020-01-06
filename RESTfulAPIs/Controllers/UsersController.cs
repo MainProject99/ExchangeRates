@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
-using BLL.Helpers;
-using BLL.Interfaces;
+using BusinessLogicLayer.Helpers;
+using BusinessLogicLayer.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Model.Models;
-using RESTfulAPIs.DTO;
+using BusinessLogicLayer.DTO;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;

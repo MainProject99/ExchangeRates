@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DLL;
+using DataAccessLayer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -14,16 +14,18 @@ using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Swagger;
 using Microsoft.OpenApi.Models;
 using AutoMapper;
-using BLL.Interfaces;
-using BLL.Services;
-using DLL.Repositiries;
-using DLL.IRepositories;
+using BusinessLogicLayer.Interfaces;
+using BusinessLogicLayer.Services;
+using DataAccessLayer.Repositiries;
+using DataAccessLayer.IRepositories;
 using Microsoft.Extensions.DependencyInjection;
-using BLL.Helpers;
+using BusinessLogicLayer.Helpers;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Web.Http;
+using Microsoft.AspNetCore.Http;
+using DataAccessLayer;
 
 namespace RESTfulAPIs
 {
@@ -41,7 +43,7 @@ namespace RESTfulAPIs
         {
                 
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"),x=>x.MigrationsAssembly("DLL")));
+                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"),x=>x.MigrationsAssembly("DataAccessLayer")));
 
             #region Jwt token
             // configure strongly typed settings objects
@@ -136,7 +138,7 @@ namespace RESTfulAPIs
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapControllers();               
             });
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
