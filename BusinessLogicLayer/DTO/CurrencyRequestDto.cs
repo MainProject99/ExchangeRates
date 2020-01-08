@@ -8,14 +8,14 @@ namespace BusinessLogicLayer.DTO
 {
     public class CurrencyRequestDto
     {
-        [JsonProperty("base_currency")]
+        [JsonProperty("from")]
         public string from { get; set; }
         
         [JsonProperty("to")]
         public string to { get; set; }
        
         [JsonProperty("amount")]
-        public string amount { get; set; }
+        public int amount { get; set; }
         
         [JsonProperty("format")]
         public string format { get; set; }

@@ -13,7 +13,7 @@ namespace RESTfulAPIs.MappingProfile
         {
             CreateMap<RegisterDto, User>();
             CreateMap<UpdateDto, User>();
-            CreateMap<CurrencyResponceDto, CurrencyRequestDto>().ReverseMap();
+            CreateMap<CurrencyRequestDto, CurrencyResponceDto>().ReverseMap();
         }
     }
 }

@@ -20,7 +20,7 @@ namespace BusinessLogicLayer.Services
     public class CurrencyService : ICurrencyService
     {
         private const string URL = "https://api.iban.com/clients/api/currency/convert/";
-        private string urlParameters = "?api_key=";
+        private string apiKey = "116677a09fe37ba01ebe3e35688ab41c";
 
         static readonly HttpClient client = new HttpClient();
         private readonly ICurrencyRepository currency;
@@ -32,137 +32,118 @@ namespace BusinessLogicLayer.Services
         }
 
 
-        public async Task<CurrencyResponceDto> PostClienConverterAsync(string from, string to, double amount)
+        public async Task PostClienConverterAsync(string from, string to, float amount)
         {
-            var currencyRequestDto = new CurrencyRequestDto();
-            currencyRequestDto.from = $"&from={from}";
-            currencyRequestDto.to = $"&to={to}";
-            currencyRequestDto.amount = $"&amount={amount}";
-            currencyRequestDto.format = $"&format=json";
 
-            var json = JsonConvert.SerializeObject(currencyRequestDto);
-            var data = new StringContent(json, Encoding.UTF8, "application/json");
+            var formData = new List<KeyValuePair<string, string>>();
+            formData.Add(new KeyValuePair<string, string>("from", from));
+            formData.Add(new KeyValuePair<string, string>("to", to));
+            formData.Add(new KeyValuePair<string, string>("amount", $"{amount}"));
 
-            var response = await client.PostAsync(URL, data);
+            var encodedContent = new FormUrlEncodedContent(formData);
 
-            string result = response.Content.ReadAsStringAsync().Result;
 
-            var map = mapper.Map<CurrencyResponceDto>(result);
 
-            return map;
-        }
-
-        public async Task<List<CurrencyRequestDto>> ClienConverterAsync(string from, string to, double amount)
-        {
-            List<CurrencyRequestDto> currencyRequest = null;
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));//ACCEPT header
             client.BaseAddress = new Uri(URL);
-            // Add an Accept header for JSON format.
-            client.DefaultRequestHeaders.Accept.Add(
-            new MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.Add("api_key", apiKey);
 
-            // List data response.
-            HttpResponseMessage response = client.GetAsync(urlParameters).Result;
-            if (response.IsSuccessStatusCode)
+            using (HttpResponseMessage response = await client.PostAsync(URL, encodedContent))
             {
-
-                // Parse the response body.
-                string responseBody = await response.Content.ReadAsStringAsync();
-                currencyRequest = JsonConvert.DeserializeObject<List<CurrencyRequestDto>>(responseBody);
-
+                using (HttpContent content = response.Content)
+                {
+                    string mycontent = await content.ReadAsStringAsync();
+                }
             }
-            return currencyRequest;
+            //var response = await client.PostAsync(URL, encodedContent);
+
+            //string result = response.Content.ReadAsStringAsync().Result;
+
+            //var map = mapper.Map<CurrencyResponceDto>(result);
+
+            //return map;
         }
 
+            public async Task<CurrencyResponceDto> TrialPostClienConverterAsync(CurrencyRequestDto currencyRequestDto)
+            {
+                //var json = "json=" + System.Web.HttpUtility.UrlEncode(JsonConvert.SerializeObject(currencyRequestDto));
+                var json = JsonConvert.SerializeObject(currencyRequestDto);
+                var data = new StringContent(json, Encoding.UTF8, "application/x-www-form-urlencoded");
 
-
-
-        //public void CreateClient()
-        //{
-        //    var request = (HttpWebRequest)WebRequest.Create("https://api.iban.com/clients/api/currency/rates/");
-
-        //    var postData = "api_key=[YOUR_API_KEY]";
-        //        postData += "&format=json";
-        //        postData += "¤cy=USD";
-
-        //    var data = Encoding.ASCII.GetBytes(postData);
-
-        //    request.Method = "POST";
-        //    request.ContentType = "application/x-www-form-urlencoded";
-        //    request.ContentLength = data.Length;
-
-        //    using (var stream = request.GetRequestStream())
-        //    {
-        //        stream.Write(data, 0, data.Length);
-        //    }
-
-        //    var response = (HttpWebResponse)request.GetResponse();
-
-        //    var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
-
-        //}
-    //    var request = (HttpWebRequest)WebRequest.Create("https://api.iban.com/clients/api/currency/convert/");
-
-    //    var postData = "api_key=[YOUR_API_KEY]";
-    //    postData += "&format=json";
-    //         postData += "&from=USD";
-    //         postData += "&to=EUR";
-    //         postData += "&amount=120";
-              
-    //        var data = Encoding.ASCII.GetBytes(postData);
-
-    //    request.Method = "POST";
-    //        request.ContentType = "application/x-www-form-urlencoded";
-    //        request.ContentLength = data.Length;
-              
-    //        using (var stream = request.GetRequestStream())
-    //        {
-    //         stream.Write(data, 0, data.Length);
-    //        }
-
-    //        var response = (HttpWebResponse)request.GetResponse();
-
-    //       var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
-
-    //
+                // Add an Accept header for JSON format.
+                client.DefaultRequestHeaders.Accept.Add(
+                new MediaTypeWithQualityHeaderValue("application/json"));
+                client.BaseAddress = new Uri(URL);
+                client.DefaultRequestHeaders.Add("api_key", apiKey);
+            // List data response.
+            using (HttpResponseMessage response = await client.PostAsync(new Uri(URL), data))
+                {
+                    using (HttpContent content = response.Content)
+                    {
+                        string mycontent = await content.ReadAsStringAsync();
+                    }
+                    var map = mapper.Map<CurrencyResponceDto>(response);
+                    return map;
+                }            
+            }
 
 
 
 
-            //public async Task<List<CurrencyRequestDto>> MethodAsync()
+            //public void CreateClient()
             //{
-            //    List<CurrencyRequestDto> contributors = null;
-            //    var url = "https://api.iban.com/clients/api/currency/rates/";
+            //    var request = (HttpWebRequest)WebRequest.Create("https://api.iban.com/clients/api/currency/rates/");
 
+            //    var postData = "api_key=[YOUR_API_KEY]";
+            //        postData += "&format=json";
+            //        postData += "¤cy=USD";
 
-            //        client.DefaultRequestHeaders.Accept.Add(
-            //        new MediaTypeWithQualityHeaderValue("application/json"));
+            //    var data = Encoding.ASCII.GetBytes(postData);
 
-            //        HttpResponseMessage response = await client.GetAsync(url);
-            //        //    .ContinueWith((taskwithresponse) =>
-            //        //{
-            //        //    var response = taskwithresponse.Result;
-            //        //    var jsonString = response.Content.ReadAsStringAsync();
-            //        //    jsonString.Wait();
-            //        //    model = JsonConvert.DeserializeObject<Currencies>(jsonString.Result);
-            //        //});
-            //        //task.Wait(); ;
-            //        response.EnsureSuccessStatusCode();
+            //    request.Method = "POST";
+            //    request.ContentType = "application/x-www-form-urlencoded";
+            //    request.ContentLength = data.Length;
 
+            //    using (var stream = request.GetRequestStream())
+            //    {
+            //        stream.Write(data, 0, data.Length);
+            //    }
 
-            //        string responseBody = await response.Content.ReadAsStringAsync();
+            //    var response = (HttpWebResponse)request.GetResponse();
 
-            //        contributors = JsonConvert.DeserializeObject<List<CurrencyRequestDto>>(responseBody);
+            //    var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
 
-
-
-            //    //}
-            //    //catch (HttpRequestException e)
-            //    //{
-            //        // Console.WriteLine("\nException Caught!");
-            //        //Console.WriteLine("Message :{0} ", e.Message);
-            //    //}
-            //     return contributors;
             //}
-        } 
+            //    var request = (HttpWebRequest)WebRequest.Create("https://api.iban.com/clients/api/currency/convert/");
+
+            //    var postData = "api_key=[YOUR_API_KEY]";
+            //    postData += "&format=json";
+            //         postData += "&from=USD";
+            //         postData += "&to=EUR";
+            //         postData += "&amount=120";
+
+            //        var data = Encoding.ASCII.GetBytes(postData);
+
+            //    request.Method = "POST";
+            //        request.ContentType = "application/x-www-form-urlencoded";
+            //        request.ContentLength = data.Length;
+
+            //        using (var stream = request.GetRequestStream())
+            //        {
+            //         stream.Write(data, 0, data.Length);
+            //        }
+
+            //        var response = (HttpWebResponse)request.GetResponse();
+
+            //       var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
+
+            //
+
+
+
+
+           
+        
+    }
 }
     

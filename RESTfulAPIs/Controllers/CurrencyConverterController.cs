@@ -20,11 +20,20 @@ namespace RESTfulAPIs.Controllers
         {
             currencyService = _currencyService;       
         }
+        //[HttpPost]
+        //public async Task ConvertData(string from, string to, double amount)
+        //{
+        //    var result = currencyService.PostClienConverterAsync(from, to, amount);
+        //    //return await result;
+        //}
+
+        
         [HttpPost]
-        public async Task<CurrencyResponceDto> ConvertData(string from, string to, double amount)
+        public async Task<CurrencyResponceDto> TrialPostClienConverterAsync(CurrencyRequestDto currencyRequestDto)
         {
-            var result = currencyService.PostClienConverterAsync(from, to, amount);
+            var result = currencyService.TrialPostClienConverterAsync(currencyRequestDto);
             return await result;
+            //return await result;
         }
     }
 }
