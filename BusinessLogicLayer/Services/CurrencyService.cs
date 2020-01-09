@@ -32,118 +32,54 @@ namespace BusinessLogicLayer.Services
         }
 
 
-        public async Task PostClienConverterAsync(string from, string to, float amount)
-        {
+    
 
-            var formData = new List<KeyValuePair<string, string>>();
-            formData.Add(new KeyValuePair<string, string>("from", from));
-            formData.Add(new KeyValuePair<string, string>("to", to));
-            formData.Add(new KeyValuePair<string, string>("amount", $"{amount}"));
-
-            var encodedContent = new FormUrlEncodedContent(formData);
-
-
-
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));//ACCEPT header
-            client.BaseAddress = new Uri(URL);
-            client.DefaultRequestHeaders.Add("api_key", apiKey);
-
-            using (HttpResponseMessage response = await client.PostAsync(URL, encodedContent))
+            public async Task<CurrencyResponceDto> PostClienConverterAsync(CurrencyRequestDto currencyRequestDto)
             {
-                using (HttpContent content = response.Content)
+            //var json = JsonConvert.SerializeObject(currencyRequestDto);
+            //var data = new StringContent(json, Encoding.UTF8, "application/json");
+
+            // Add an Accept header for JSON format. 
+            //client.DefaultRequestHeaders.Accept.Add(
+            //new MediaTypeWithQualityHeaderValue("application/json"));
+            //urlConverter.
+            //client.DefaultRequestHeaders.Add("api_key", apiKey);
+            
+            var urlConverter = new Uri(URL + $"?api_key={currencyRequestDto.api_key}&format={currencyRequestDto.format}&from={currencyRequestDto.from}&to={currencyRequestDto.to}&amount={currencyRequestDto.amount}");
+
+            using (HttpResponseMessage response = await client.PostAsync(urlConverter, null))
                 {
-                    string mycontent = await content.ReadAsStringAsync();
-                }
-            }
-            //var response = await client.PostAsync(URL, encodedContent);
-
-            //string result = response.Content.ReadAsStringAsync().Result;
-
-            //var map = mapper.Map<CurrencyResponceDto>(result);
-
-            //return map;
-        }
-
-            public async Task<CurrencyResponceDto> TrialPostClienConverterAsync(CurrencyRequestDto currencyRequestDto)
-            {
-                //var json = "json=" + System.Web.HttpUtility.UrlEncode(JsonConvert.SerializeObject(currencyRequestDto));
-                var json = JsonConvert.SerializeObject(currencyRequestDto);
-                var data = new StringContent(json, Encoding.UTF8, "application/x-www-form-urlencoded");
-
-                // Add an Accept header for JSON format.
-                client.DefaultRequestHeaders.Accept.Add(
-                new MediaTypeWithQualityHeaderValue("application/json"));
-                client.BaseAddress = new Uri(URL);
-                client.DefaultRequestHeaders.Add("api_key", apiKey);
-            // List data response.
-            using (HttpResponseMessage response = await client.PostAsync(new Uri(URL), data))
-                {
+                CurrencyResponceDto currencyResponceDto = null;
                     using (HttpContent content = response.Content)
                     {
-                        string mycontent = await content.ReadAsStringAsync();
-                    }
-                    var map = mapper.Map<CurrencyResponceDto>(response);
-                    return map;
+                    string mycontent = await content.ReadAsStringAsync();
+
+                    currencyResponceDto = JsonConvert.DeserializeObject<CurrencyResponceDto>(mycontent);
+                }
+                //var map = mapper.Map<CurrencyResponceDto,CurrencyRequestDto>(currencyResponceDto);
+                return currencyResponceDto;
                 }            
             }
 
-
-
-
-            //public void CreateClient()
-            //{
-            //    var request = (HttpWebRequest)WebRequest.Create("https://api.iban.com/clients/api/currency/rates/");
-
-            //    var postData = "api_key=[YOUR_API_KEY]";
-            //        postData += "&format=json";
-            //        postData += "¤cy=USD";
-
-            //    var data = Encoding.ASCII.GetBytes(postData);
-
-            //    request.Method = "POST";
-            //    request.ContentType = "application/x-www-form-urlencoded";
-            //    request.ContentLength = data.Length;
-
-            //    using (var stream = request.GetRequestStream())
-            //    {
-            //        stream.Write(data, 0, data.Length);
-            //    }
-
-            //    var response = (HttpWebResponse)request.GetResponse();
-
-            //    var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
-
-            //}
-            //    var request = (HttpWebRequest)WebRequest.Create("https://api.iban.com/clients/api/currency/convert/");
-
-            //    var postData = "api_key=[YOUR_API_KEY]";
-            //    postData += "&format=json";
-            //         postData += "&from=USD";
-            //         postData += "&to=EUR";
-            //         postData += "&amount=120";
-
-            //        var data = Encoding.ASCII.GetBytes(postData);
-
-            //    request.Method = "POST";
-            //        request.ContentType = "application/x-www-form-urlencoded";
-            //        request.ContentLength = data.Length;
-
-            //        using (var stream = request.GetRequestStream())
-            //        {
-            //         stream.Write(data, 0, data.Length);
-            //        }
-
-            //        var response = (HttpWebResponse)request.GetResponse();
-
-            //       var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
-
-            //
-
-
-
-
-           
-        
+        public static string NumberToWords(int number)
+        {
+            if (number == 0) { return "zero"; }
+            if (number < 0) { return "minus " + NumberToWords(Math.Abs(number)); }
+            string words = "";
+            if ((number / 10000000) > 0) { words += NumberToWords(number / 10000000) + " Crore "; number %= 10000000; }
+            if ((number / 100000) > 0) { words += NumberToWords(number / 100000) + " Lakh "; number %= 100000; }
+            if ((number / 1000) > 0) { words += NumberToWords(number / 1000) + " Thousand "; number %= 1000; }
+            if ((number / 100) > 0) { words += NumberToWords(number / 100) + " Hundred "; number %= 100; }
+            if (number > 0)
+            {
+                if (words != "") { words += "and "; }
+                var unitsMap = new[] { "Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen" };
+                var tensMap = new[] { "Zero", "Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "seventy", "Eighty", "Ninety" };
+                if (number < 20) { words += unitsMap[number]; }
+                else { words += tensMap[number / 10]; if ((number % 10) > 0) { words += "-" + unitsMap[number % 10]; } }
+            }
+            return words;
+        }
     }
 }
     

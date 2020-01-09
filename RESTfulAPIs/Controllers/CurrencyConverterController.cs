@@ -31,9 +31,9 @@ namespace RESTfulAPIs.Controllers
         [HttpPost]
         public async Task<CurrencyResponceDto> TrialPostClienConverterAsync(CurrencyRequestDto currencyRequestDto)
         {
-            var result = currencyService.TrialPostClienConverterAsync(currencyRequestDto);
+            var result = currencyService.PostClienConverterAsync(currencyRequestDto);
             return await result;
             //return await result;
-        }
+        }      
     }
 }
