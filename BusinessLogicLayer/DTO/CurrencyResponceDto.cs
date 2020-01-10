@@ -28,6 +28,7 @@ namespace BusinessLogicLayer.DTO
 
         [JsonProperty("convert_result")]
         public float convert_result { get; set; }
-        
+
+        public string numberInString { get; set; }
     }
 }

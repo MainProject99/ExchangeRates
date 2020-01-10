@@ -21,6 +21,9 @@ namespace BusinessLogicLayer.DTO
         
         [JsonProperty("format")]
         public string format { get; set; }
-        
+
+        public NumberToLanguageEnum numberToLanguage { get; set; }
+
+
     }
 }

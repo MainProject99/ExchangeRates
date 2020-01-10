@@ -14,6 +14,11 @@ namespace RESTfulAPIs.MappingProfile
             CreateMap<RegisterDto, User>();
             CreateMap<UpdateDto, User>();
             CreateMap<CurrencyRequestDto, CurrencyResponceDto>().ReverseMap();
+
+            CreateMap<Currencies, CurrencyResponceDto>().ReverseMap();
+            //.ForMember(c=>c.to, d => d.MapFrom(src=>src.Name));
+            CreateMap<CurrencyFrom, CurrencyResponceDto>().ReverseMap();
+                //.ForMember(c => c.from, d => d.MapFrom(src => src.Name));
         }
     }
 }
