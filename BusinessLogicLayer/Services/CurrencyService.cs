@@ -13,10 +13,11 @@ using System.IO;
 using Model.Models;
 using BusinessLogicLayer.DTO;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BusinessLogicLayer.Services
 {
-
+    [Authorize]
     public class CurrencyService : ICurrencyService
     {
         private const string URL = "https://api.iban.com/clients/api/currency/convert/";
