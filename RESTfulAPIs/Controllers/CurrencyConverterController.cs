@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace RESTfulAPIs.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class CurrencyConverterController : ControllerBase
@@ -21,18 +21,19 @@ namespace RESTfulAPIs.Controllers
         {
             currencyService = _currencyService;       
         }
-        
+        /// <summary>
+        /// This method allows register user
+        /// </summary>
+        /// <param name="currencyRequestDto">Required</param>
+        /// <returns>CurrencyResponceDto</returns>
+        /// <response code="200">Model valid</response> 
+        /// <response code="400">If Convert process failed</response>
         [HttpPost("PostToConvert")]
         public async Task<CurrencyResponceDto> PostClienConverterAsync(CurrencyRequestDto currencyRequestDto)
         {
             var result = currencyService.PostClienConverterAsync(currencyRequestDto);
             return await result;
         
-        }
-        [HttpGet]
-        public async Task GetClient() 
-        {
-        
-        }
+        }                
     }
 }

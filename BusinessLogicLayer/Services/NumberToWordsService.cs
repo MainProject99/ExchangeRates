@@ -30,7 +30,7 @@ namespace BusinessLogicLayer.Services
                 }
                 else
                 {
-                    return ConvertENG(amount_int) + " Point " + ConvertENG(amount_dec) + ".";
+                    return $"{ConvertENG(amount_int)} Point {ConvertENG(amount_dec)} ";
                 }
             }
             catch (Exception e)
@@ -52,7 +52,7 @@ namespace BusinessLogicLayer.Services
                 }
                 else
                 {
-                    return ConvertUKR(amount_int) + "." + ConvertUKR(amount_dec) + ".";
+                    return $"{ConvertUKR(amount_int)}.{ConvertUKR(amount_dec)}";
                 }
             }
             catch (Exception e)
@@ -69,30 +69,25 @@ namespace BusinessLogicLayer.Services
             }
             if (i < 100)
             {
-                return tensEng[i / 10] + ((i % 10 > 0) ? " " + ConvertENG(i % 10) : "");
+                return $" {tensEng[i / 10] + ((i % 10 > 0) ? " "+ ConvertENG(i % 10) : "")} ";
             }
             if (i < 1000)
             {
-                return unitsEng[i / 100] + " Hundred"
-                        + ((i % 100 > 0) ? " And " + ConvertENG(i % 100) : "");
+                return $"{unitsEng[i / 100]} Hundred  { ((i % 100 > 0) ? "And " + ConvertENG(i % 100) : "")}";
             }
             if (i < 100000)
             {
-                return ConvertENG(i / 1000) + " Thousand "
-                + ((i % 1000 > 0) ? " " + ConvertENG(i % 1000) : "");
+                return $"{ ConvertENG(i / 1000)} Thousand { ((i % 1000 > 0) ? " " + ConvertENG(i % 1000) : "")}";
             }
             if (i < 10000000)
             {
-                return ConvertENG(i / 100000) + " Lakh "
-                        + ((i % 100000 > 0) ? " " + ConvertENG(i % 100000) : "");
+                return $"{ConvertENG(i / 100000) } Thousands  {((i % 100000 > 0) ? " " + ConvertENG(i % 100000) : "")}";
             }
             if (i < 1000000000)
             {
-                return ConvertENG(i / 10000000) + " Crore "
-                        + ((i % 10000000 > 0) ? " " + ConvertENG(i % 10000000) : "");
+                return $"{ConvertENG(i / 10000000)} Million {((i % 10000000 > 0) ? " " + ConvertENG(i % 10000000) : "")}";
             }
-            return ConvertENG(i / 1000000000) + " Arab "
-                    + ((i % 1000000000 > 0) ? " " + ConvertENG(i % 1000000000) : "");
+            return $"{ConvertENG(i / 1000000000)} Billion {((i % 1000000000 > 0) ? " " + ConvertENG(i % 1000000000) : "")}";
         }
 
         public static string ConvertUKR(int i)
@@ -111,21 +106,17 @@ namespace BusinessLogicLayer.Services
             }
             if (i < 100000)
             {
-                return ConvertUKR(i / 1000) + " Тисяча "
-                + ((i % 1000 > 0) ? " " + ConvertUKR(i % 1000) : "");
+                return $"{ConvertUKR(i / 1000)} Тисяча { ((i % 1000 > 0) ? " " + ConvertUKR(i % 1000) : "")}";
             }
             if (i < 10000000)
             {
-                return ConvertUKR(i / 100000) + " Тисяч "
-                        + ((i % 100000 > 0) ? " " + ConvertUKR(i % 100000) : "");
+                return $"{ConvertUKR(i / 100000)} Тисяч {((i % 100000 > 0) ? " " + ConvertUKR(i % 100000) : "")}";
             }
             if (i < 1000000000)
             {
-                return ConvertUKR(i / 10000000) + " Мільйон "
-                        + ((i % 10000000 > 0) ? " " + ConvertUKR(i % 10000000) : "");
+                return $"{ConvertUKR(i / 10000000)} Мільйон {((i % 10000000 > 0) ? " " + ConvertUKR(i % 10000000) : "")}";
             }
-            return ConvertUKR(i / 1000000000) + " Мільярд "
-                    + ((i % 1000000000 > 0) ? " " + ConvertUKR(i % 1000000000) : "");
+            return $"{ConvertUKR(i / 1000000000)} Мільярд {((i % 1000000000 > 0) ? " " + ConvertUKR(i % 1000000000) : "")}";
         }
     }
 }

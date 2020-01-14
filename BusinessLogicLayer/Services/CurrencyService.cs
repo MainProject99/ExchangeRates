@@ -17,7 +17,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace BusinessLogicLayer.Services
 {
-    [Authorize]
     public class CurrencyService : ICurrencyService
     {
         private const string URL = "https://api.iban.com/clients/api/currency/convert/";
@@ -66,14 +65,13 @@ namespace BusinessLogicLayer.Services
 
                     }
                     #endregion
-
-                }
+                 }
                 //var mapTo = mapper.Map<CurrencyResponceDto,Currencies>(currencyResponceDto);
                 //var mapFrom = mapper.Map<CurrencyResponceDto,CurrencyFrom>(currencyResponceDto);
 
                 return currencyResponceDto;
                 }            
-            }
+             }
     }
 }
     

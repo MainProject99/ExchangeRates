@@ -19,7 +19,6 @@ using Microsoft.IdentityModel.Logging;
 
 namespace RESTfulAPIs.Controllers
 {
-    [Authorize]
     [ApiController]
     [System.Web.Http.Route("[controller]")]
     public class UsersController : ControllerBase
