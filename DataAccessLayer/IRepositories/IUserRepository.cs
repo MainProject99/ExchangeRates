@@ -7,6 +7,7 @@ namespace DataAccessLayer.IRepositories
 {
     public interface IUserRepository : IRepository<User>
     {
+        bool Exist(string email);
 
     }
 }

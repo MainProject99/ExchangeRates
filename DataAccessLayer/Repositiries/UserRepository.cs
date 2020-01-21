@@ -44,5 +44,11 @@ namespace DataAccessLayer.Repositiries
                 Database.SaveChanges();
             }
         }
+        public bool Exist (string email)
+        { 
+            return Database.Users.Any(p=>p.Email == email);  
+        }
+
+
     }
 }

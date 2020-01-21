@@ -10,5 +10,6 @@ namespace BusinessLogicLayer.Interfaces
     public interface ICurrencyService
     {
          Task<CurrencyResponceDto> PostClienConverterAsync(CurrencyRequestDto currencyRequestDto);
+        CurrencyDefaultInfoDTO GetCurrencyDefaultInfo();
     }
 }

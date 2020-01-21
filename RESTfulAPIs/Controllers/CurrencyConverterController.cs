@@ -34,6 +34,18 @@ namespace RESTfulAPIs.Controllers
             var result = currencyService.PostClienConverterAsync(currencyRequestDto);
             return await result;
         
-        }                
+        }
+
+        /// <summary>
+        /// Method for getting default currency of current user
+        /// </summary>
+        /// <returns>Default currencies.</returns>
+        [HttpGet("GetCurrencyInfo")]
+        public IActionResult GetCurrencyInfo()
+        {
+            var result = currencyService.GetCurrencyDefaultInfo();
+
+            return Ok(result);
+        }
     }
 }

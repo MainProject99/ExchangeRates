@@ -5,7 +5,7 @@ using System.Text;
 
 namespace DataAccessLayer.IRepositories
 {
-    public interface ICurrencyRepository : IRepository<Currencies>
+    public interface ICurrencyRepository : IRepository<Currency>
     {
     }
 }

@@ -25,8 +25,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Web.Http;
 using Microsoft.AspNetCore.Http;
-using DataAccessLayer;
-
+ 
 namespace RESTfulAPIs
 {
     public class Startup
@@ -98,7 +97,11 @@ namespace RESTfulAPIs
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<ICurrencyRepository,CurrencyRepository>();
-            services.AddTransient<ICurrencyFromRepository,CurrencyFromRepository>();
+
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+            services.Configure<CurrencySettings>(Configuration.GetSection("CurrencySettings"));
+
             #endregion
 
             services.AddControllers();
@@ -146,10 +149,17 @@ namespace RESTfulAPIs
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-           
+            var builder = new ConfigurationBuilder()
+                              .SetBasePath(env.ContentRootPath)
+                              .AddJsonFile("appsettings.json",
+                                           optional: false,
+                                           reloadOnChange: true)
+                              .AddEnvironmentVariables();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                builder.AddUserSecrets<Startup>();
             }                       
             app.UseRouting();
 

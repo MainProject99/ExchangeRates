@@ -8,6 +8,7 @@ namespace BusinessLogicLayer.DTO
 {
     public class CurrencyRequestDto
     {
+ 
         [JsonProperty("api_key")]
         public string api_key { get; set; }
         [JsonProperty("from")]

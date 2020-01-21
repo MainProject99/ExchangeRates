@@ -13,14 +13,14 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Logging;
+using System.Web.Http;
 
 namespace RESTfulAPIs.Controllers
 {
     [ApiController]
-    [System.Web.Http.Route("[controller]")]
+    [Microsoft.AspNetCore.Mvc.Route("[controller]")]
     public class UsersController : ControllerBase
     {
         private IUserService _userService;
@@ -34,7 +34,7 @@ namespace RESTfulAPIs.Controllers
         {
             _userService = userService;
             _mapper = mapper;
-            _appSettings = appSettings.Value;
+            _appSettings = appSettings.Value ?? throw new ArgumentException(nameof(appSettings)); ;
         }
         /// <summary>
         /// This method allows register user
@@ -78,13 +78,18 @@ namespace RESTfulAPIs.Controllers
             if (user == null)
                 return BadRequest(new { message = "Username or password is incorrect" });
 
+
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, user.Id.ToString())
+                    new Claim(ClaimTypes.Name, user.Id.ToString()),
+                    new Claim(ClaimTypes.Email, user.Id.ToString()),
+                    new Claim("CurrencyFrom", "dasd"),
+                    new Claim("CurrencyTo", "dasd")
+
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

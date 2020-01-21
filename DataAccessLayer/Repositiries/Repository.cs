@@ -27,6 +27,7 @@ namespace DataAccessLayer.Repositiries
                 throw new NotImplementedException();
             }
             entities.Add(entity);
+            Database.SaveChanges();
             return entity;
         }
 
@@ -35,9 +36,9 @@ namespace DataAccessLayer.Repositiries
             if (entity == null)
                 throw new NotImplementedException();
             entities.Update(entity);
+            Database.SaveChanges();
             return entity;
         }
-
 
         public virtual IQueryable<T> Get(string includeProperties = "")
         {

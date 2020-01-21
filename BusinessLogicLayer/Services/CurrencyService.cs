@@ -14,45 +14,99 @@ using Model.Models;
 using BusinessLogicLayer.DTO;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
+using BusinessLogicLayer.Helpers;
+using Microsoft.Extensions.Options;
 
 namespace BusinessLogicLayer.Services
 {
     public class CurrencyService : ICurrencyService
     {
-        private const string URL = "https://api.iban.com/clients/api/currency/convert/";
-        private string apiKey = "116677a09fe37ba01ebe3e35688ab41c";
-
         static readonly HttpClient client = new HttpClient();
-        private readonly ICurrencyRepository currency;
+        private readonly ICurrencyRepository currencyRepository;
+        private readonly IUserRepository userRepository;
+        IHttpContextAccessor httpContextAccessor;
         private IMapper mapper;
-        public CurrencyService(ICurrencyRepository _currency, IMapper _mapper)
+        private readonly CurrencySettings currencySettings;
+
+        private const string URL = "https://api.iban.com/clients/api/currency/convert/";
+
+        public CurrencyService(ICurrencyRepository _currency, IMapper _mapper, IUserRepository _userRepository,
+                  IOptions<CurrencySettings> _currencySettings, IHttpContextAccessor _httpContextAccessor)
         {
-            currency = _currency;
+            userRepository = _userRepository;
+            currencyRepository = _currency;
+            currencySettings = _currencySettings.Value ?? throw new ArgumentException(nameof(_currencySettings)); ;
             mapper = _mapper;
+            httpContextAccessor = _httpContextAccessor;
         }
 
-            public async Task<CurrencyResponceDto> PostClienConverterAsync(CurrencyRequestDto currencyRequestDto)
+        public CurrencyDefaultInfoDTO GetCurrencyDefaultInfo()
+        {
+            try
             {
-            //var json = JsonConvert.SerializeObject(currencyRequestDto);
-            //var data = new StringContent(json, Encoding.UTF8, "application/json");
+                var userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).Value;
 
-            // Add an Accept header for JSON format. 
-            //client.DefaultRequestHeaders.Accept.Add(
-            //new MediaTypeWithQualityHeaderValue("application/json"));
-            //urlConverter.
-            //client.DefaultRequestHeaders.Add("api_key", apiKey);
-            
-            var urlConverter = new Uri(URL + $"?api_key={currencyRequestDto.api_key}&format={currencyRequestDto.format}&from={currencyRequestDto.from}&to={currencyRequestDto.to}&amount={currencyRequestDto.amount}");
+                var currentUserInfo = currencyRepository.GetById(Int16.Parse(userId));
+
+                return mapper.Map<CurrencyDefaultInfoDTO>(currentUserInfo);
+
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+
+        }
+
+       
+
+        public async Task<CurrencyResponceDto> PostClienConverterAsync(CurrencyRequestDto currencyRequestDto)
+        {
+            var userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).Value;
+            var currentId = int.Parse(userId);
+            var defaltCurrency = currencyRepository.GetById(currentId);
+
+            if (defaltCurrency == null)
+            {
+                Currency currency = new Currency();
+                 if (!string.IsNullOrEmpty(userId))
+                    currency.UserId = currentId;
+
+                if (!string.IsNullOrEmpty(currencyRequestDto.from))
+                    currency.CurrencyFrom = currencyRequestDto.from;
+
+                if (!string.IsNullOrEmpty(currencyRequestDto.to))
+                    currency.CurrencyTo = currencyRequestDto.to;
+                currencyRepository.Insert(currency);
+                
+            }
+            else
+            {
+
+                if (!string.IsNullOrEmpty(defaltCurrency.CurrencyFrom))
+                    defaltCurrency.CurrencyFrom = currencyRequestDto.from;
+
+                if (!string.IsNullOrEmpty(defaltCurrency.CurrencyTo))
+                    defaltCurrency.CurrencyTo = currencyRequestDto.to;
+
+                //Update default currency
+                currencyRepository.Update(defaltCurrency);
+            }
+
+
+            var urlConverter = new Uri(URL + $"?api_key={currencySettings.ApiKey}&format={currencyRequestDto.format}&from={currencyRequestDto.from }&to={currencyRequestDto.to}&amount={currencyRequestDto.amount}");
 
             using (HttpResponseMessage response = await client.PostAsync(urlConverter, null))
-                {
+            {
                 CurrencyResponceDto currencyResponceDto = null;
-                    using (HttpContent content = response.Content)
-                    {
+                using (HttpContent content = response.Content)
+                {
                     string mycontent = await content.ReadAsStringAsync();
 
                     currencyResponceDto = JsonConvert.DeserializeObject<CurrencyResponceDto>(mycontent);
-                    
                     #region Translate Number to Words
 
                     if (currencyRequestDto.numberToLanguage == NumberToLanguageEnum.Engl)
@@ -62,16 +116,15 @@ namespace BusinessLogicLayer.Services
                     else if (currencyRequestDto.numberToLanguage == NumberToLanguageEnum.Ukr)
                     {
                         currencyResponceDto.numberInString = NumberToWordsService.ConvertAmountToUkr(currencyResponceDto.convert_result);
-
                     }
                     #endregion
-                 }
-                //var mapTo = mapper.Map<CurrencyResponceDto,Currencies>(currencyResponceDto);
-                //var mapFrom = mapper.Map<CurrencyResponceDto,CurrencyFrom>(currencyResponceDto);
+                }
+
 
                 return currencyResponceDto;
-                }            
-             }
+            }
+        }
+
     }
 }
-    
+
