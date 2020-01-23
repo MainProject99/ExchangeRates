@@ -21,8 +21,12 @@ using Microsoft.Extensions.Options;
 
 namespace BusinessLogicLayer.Services
 {
+    /// <summary>
+    /// Service for Currency, include all methods needed to work with Currency storage.
+    /// </summary>
     public class CurrencyService : ICurrencyService
     {
+        
         static readonly HttpClient client = new HttpClient();
         private readonly ICurrencyRepository currencyRepository;
         private readonly IUserRepository userRepository;
@@ -42,44 +46,75 @@ namespace BusinessLogicLayer.Services
             httpContextAccessor = _httpContextAccessor;
         }
 
+        /// <summary>
+        /// Method for getting Currencies and User Id from DB
+        /// /// </summary>
+        /// <returns>Default CurrencyTo and Currency from</returns>
         public CurrencyDefaultInfoDTO GetCurrencyDefaultInfo()
         {
-            try
-            {
+           
                 var userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).Value;
-
+                if (userId == null)
+                {
+                    throw new AppException($"Current user equal {userId} !");
+                }
                 var currentUserInfo = currencyRepository.GetById(Int16.Parse(userId));
 
                 return mapper.Map<CurrencyDefaultInfoDTO>(currentUserInfo);
-
-            }
-            catch (Exception e)
-            {
-
-                throw e;
-            }
+            
 
         }
 
-       
+
+        /// <summary>
+        /// Transform CurrencyRequestDto <paramref name="currencyRequestDto"/> to Currency and insert it to Currency table of DB,
+        ///if the the current doesn't have correct data, It'll add data from secrets.json 
+        ///This method convert value, and convert result to string
+        /// </summary>
+        /// <param name="currencyRequestDto">
+        /// Should contain not null or empty data .
+        /// </param>
+        /// <returns>Converted data</returns>
 
         public async Task<CurrencyResponceDto> PostClienConverterAsync(CurrencyRequestDto currencyRequestDto)
         {
             var userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).Value;
+            if (userId == null) 
+            { 
+                throw new AppException($"Current user equal {userId} !");
+            }
             var currentId = int.Parse(userId);
             var defaltCurrency = currencyRepository.GetById(currentId);
+            Currency currency = new Currency();
 
             if (defaltCurrency == null)
             {
-                Currency currency = new Currency();
-                 if (!string.IsNullOrEmpty(userId))
+
+                
+                if (!string.IsNullOrEmpty(userId))
+                {
                     currency.UserId = currentId;
+                }
 
                 if (!string.IsNullOrEmpty(currencyRequestDto.from))
+                {
                     currency.CurrencyFrom = currencyRequestDto.from;
+                }
+                else 
+                {
+                    //Set default currency if currency is incorrect
+                    currency.CurrencyFrom = currencySettings.CurrencyFrom;
+                }
 
                 if (!string.IsNullOrEmpty(currencyRequestDto.to))
+                {
                     currency.CurrencyTo = currencyRequestDto.to;
+                }
+                else
+                {
+                    currency.CurrencyTo = currencySettings.CurrencyTo;
+                }
+                
                 currencyRepository.Insert(currency);
                 
             }
@@ -87,14 +122,27 @@ namespace BusinessLogicLayer.Services
             {
 
                 if (!string.IsNullOrEmpty(defaltCurrency.CurrencyFrom))
+                {
                     defaltCurrency.CurrencyFrom = currencyRequestDto.from;
-
+                }
+                else
+                {
+                    //Set default currency if currency is incorrect
+                    currency.CurrencyFrom = currencySettings.CurrencyFrom;
+                }
                 if (!string.IsNullOrEmpty(defaltCurrency.CurrencyTo))
+                {
                     defaltCurrency.CurrencyTo = currencyRequestDto.to;
+                }
+                else
+                {
+                    currency.CurrencyTo = currencySettings.CurrencyTo;
+                }
 
                 //Update default currency
                 currencyRepository.Update(defaltCurrency);
             }
+
 
 
             var urlConverter = new Uri(URL + $"?api_key={currencySettings.ApiKey}&format={currencyRequestDto.format}&from={currencyRequestDto.from }&to={currencyRequestDto.to}&amount={currencyRequestDto.amount}");

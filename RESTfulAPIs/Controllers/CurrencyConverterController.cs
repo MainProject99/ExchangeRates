@@ -22,11 +22,11 @@ namespace RESTfulAPIs.Controllers
             currencyService = _currencyService;       
         }
         /// <summary>
-        /// This method allows register user
+        /// This method allows to Convert currency
         /// </summary>
         /// <param name="currencyRequestDto">Required</param>
         /// <returns>CurrencyResponceDto</returns>
-        /// <response code="200">Model valid</response> 
+        /// <response code="200"></response> 
         /// <response code="400">If Convert process failed</response>
         [HttpPost("PostToConvert")]
         public async Task<CurrencyResponceDto> PostClienConverterAsync(CurrencyRequestDto currencyRequestDto)
@@ -40,10 +40,17 @@ namespace RESTfulAPIs.Controllers
         /// Method for getting default currency of current user
         /// </summary>
         /// <returns>Default currencies.</returns>
+        ///<response code="200">Client’s request was accepted successfully</response> 
+        ///<response code="404">There isn't default currency of current user</response> 
+
         [HttpGet("GetCurrencyInfo")]
         public IActionResult GetCurrencyInfo()
         {
             var result = currencyService.GetCurrencyDefaultInfo();
+            if (result == null)
+            {
+                return new BadRequestResult();
+            }
 
             return Ok(result);
         }

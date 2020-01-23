@@ -4,6 +4,9 @@ using System.Text;
 
 namespace BusinessLogicLayer.Services
 {
+    /// <summary>
+    /// Service for NumberToWordsService, include all methods that help you to convert number to word.
+    /// </summary>
     public static class NumberToWordsService
     {
         private static string[] unitsEng = { "Zero", "One", "Two", "Three",
@@ -18,6 +21,11 @@ namespace BusinessLogicLayer.Services
                                             "Шістнадцять","Сімнадцять", "Вісімнадцять","Дев'ятнадцять"};
         private static string[] tensUkr =   { "", "", "Двадцять", "Тридцять", "Сорок", "П'ятдесят", "Шістдесят", "Сімдесят", "Вісімдесят", "Дев'яносто" };
 
+
+        /// <summary>
+        /// Transform <param name="amount"/> to words, that describes numbers
+        /// </summary>
+        /// <returns>Converted data</returns>
         public static string ConvertAmountToEng(double amount)
         {
             try
@@ -39,7 +47,10 @@ namespace BusinessLogicLayer.Services
             }
             return "";
         }
-
+        /// <summary>
+        /// Transform <param name="amount"/> to words, that describes numbers
+        /// </summary>
+        /// <returns>Converted data</returns>
         public static string ConvertAmountToUkr(double amount)
         {
             try
@@ -61,7 +72,24 @@ namespace BusinessLogicLayer.Services
             }
             return "";
         }
-        public static string ConvertENG(int i)
+        /// <summary>
+        /// Transform <param name="amount"/> to words, that describes numbers
+        /// </summary>
+        ///  <example> 
+        /// This sample shows how to call the <see cref="ConvertENG"/>
+        /// 
+        /// <code>
+        ///  if (i < 100) //check condition, if true 
+        //// {
+        ///if i = 88             88/10 = 8.8    88 % 10 = 8 > 0    true             88 % 10 = 8 search 8-th element of array and get eighty eight  
+        ///   return $" {tensEng[i / 10] +     ((i % 10 >  0 )    ? " " + ConvertENG(i % 10)    : "")} ";
+        ///}
+        ///
+    /// 
+    /// </code>
+    /// </example>
+    /// <returns>Converted data</returns>
+    public static string ConvertENG(int i)
         {
             if (i < 20)
             {
@@ -90,6 +118,23 @@ namespace BusinessLogicLayer.Services
             return $"{ConvertENG(i / 1000000000)} Billion {((i % 1000000000 > 0) ? " " + ConvertENG(i % 1000000000) : "")}";
         }
 
+        /// <summary>
+        /// Transform <param name="i"/> to words, that describes numbers
+        /// </summary>
+        ///  <example> 
+        /// This sample shows how to call the <see cref="ConvertUKR"/>
+        /// 
+        /// <code>
+        ///  if (i < 100) //check condition, if true 
+        //// {
+        ///if i = 88             88/10 = 8.8    88 % 10 = 8 > 0    true             88 % 10 = 8 search 8-th element of array and get eighty eight  
+        ///   return $" {tensEng[i / 10] +     ((i % 10 >  0 )    ? " " + ConvertUKR(i % 10)    : "")} ";
+        ///}
+        ///
+        /// 
+        /// </code>
+        /// </example>
+        /// <returns>Converted data</returns>
         public static string ConvertUKR(int i)
         {
             if (i < 20)

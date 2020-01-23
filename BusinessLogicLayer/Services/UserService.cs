@@ -10,6 +10,9 @@ using System.Text;
 
 namespace BusinessLogicLayer.Services
 {
+    /// <summary>
+    /// Service for User, include all methods needed to work with User storage.
+    /// </summary>
     public class UserService : IUserService
     {
         private readonly IUserRepository userRepository;
@@ -19,6 +22,12 @@ namespace BusinessLogicLayer.Services
             userRepository = _userRepository;
             Database = _Database;
         }
+        /// <summary>
+        /// Check the user permission
+        /// </summary>
+        /// <param name="email">Should not be null</param>
+        /// <param name="password">Should not be null</param>
+        /// <returns> User model</returns>
         public User Authenticate(string email, string password)
         {
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
@@ -38,7 +47,12 @@ namespace BusinessLogicLayer.Services
             return user;
         }
 
-
+        /// <summary>
+        /// Check the user permission and if It's correct add to DB
+        /// </summary>
+        /// <param name="user">Should not be null</param>
+        /// <param name="password">Should not be null</param>
+        /// <returns> User model</returns>
         public User CreateUser (User user, string password)
         {
             // validation
@@ -60,6 +74,12 @@ namespace BusinessLogicLayer.Services
             userRepository.Insert(user);
             return user;
         }
+        /// <summary>
+        /// Check the user permission and if It's correct Update in DB
+        /// </summary>
+        /// <param name="userParam">Should not be null, if It's null we return exception</param>
+        /// <param name="password">Should not be null</param>
+        /// <returns> User model</returns>
         public void UpdateUser(User userParam, string password = null)
         {
             var user = userRepository.GetById(userParam.Id);

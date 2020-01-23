@@ -66,8 +66,8 @@ namespace RESTfulAPIs.Controllers
         /// This method allows to log in to the API and generate an authentication token.
         /// </summary>
         /// <param name="authModel">Required</param>
-        /// <returns>UserInfo authmodel</returns>
-        /// <response code="200">Return UserInfo authmodel</response>
+        /// <returns>User model</returns>
+        /// <response code="200">Return User model</response>
         /// <response code="400">If login process failed</response>
         [AllowAnonymous]
         [Microsoft.AspNetCore.Mvc.HttpPost("Authenticate")]//("authenticate")]
@@ -111,7 +111,7 @@ namespace RESTfulAPIs.Controllers
         /// This method is for change password
         /// </summary>
         /// <param name="updateModel">Required</param>
-        /// <returns></returns>
+        /// <returns>Updated User Model</returns>
         /// <response code="200">Data change succesful</response> 
         /// <response code="400">If data change process failed</response>
         [Microsoft.AspNetCore.Mvc.HttpPut("{id}")]
