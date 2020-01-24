@@ -145,5 +145,10 @@ namespace BusinessLogicLayer.Services
 
             return true;
         }
+        public bool Exsist(string email) 
+        {
+           return userRepository.Exist(email);
+
+        }
     }
 }

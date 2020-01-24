@@ -11,5 +11,6 @@ namespace BusinessLogicLayer.Interfaces
         User CreateUser(User user, string password);
 
         void UpdateUser(User userParam, string password = null);
+        bool Exsist(string email);
     }
 }

@@ -180,8 +180,9 @@ namespace RESTfulAPIs
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IUserService userService, ICurrencyRepository currencyRepository)
         {
+
             var builder = new ConfigurationBuilder()
                               .SetBasePath(env.ContentRootPath)
                               .AddJsonFile("appsettings.json",
@@ -204,6 +205,7 @@ namespace RESTfulAPIs
             app.UseAuthentication();
             app.UseAuthorization();
 
+            DataInitializer.SeedData(userService, currencyRepository);
 
           
 
