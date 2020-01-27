@@ -88,56 +88,25 @@ namespace BusinessLogicLayer.Services
             Currency currency = new Currency();
 
             if (defaltCurrency == null)
-            {
-
-                
+            {               
                 if (!string.IsNullOrEmpty(userId))
                 {
                     currency.UserId = currentId;
                 }
 
-                if (!string.IsNullOrEmpty(currencyRequestDto.from))
-                {
-                    currency.CurrencyFrom = currencyRequestDto.from;
-                }
-                else 
-                {
-                    //Set default currency if currency is incorrect
-                    currency.CurrencyFrom = currencySettings.CurrencyFrom;
-                }
+                var CurrencyFrom = !string.IsNullOrEmpty(currencyRequestDto.from) ? currency.CurrencyFrom = currencyRequestDto.from : currency.CurrencyFrom = currencySettings.CurrencyFrom;
 
-                if (!string.IsNullOrEmpty(currencyRequestDto.to))
-                {
-                    currency.CurrencyTo = currencyRequestDto.to;
-                }
-                else
-                {
-                    currency.CurrencyTo = currencySettings.CurrencyTo;
-                }
-                
+                var CurrencyTo = !string.IsNullOrEmpty(currencyRequestDto.to) ? currency.CurrencyTo = currencyRequestDto.to : currency.CurrencyTo = currencySettings.CurrencyTo;
+                                
                 currencyRepository.Insert(currency);
                 
             }
             else
             {
-
-                if (!string.IsNullOrEmpty(defaltCurrency.CurrencyFrom))
-                {
-                    defaltCurrency.CurrencyFrom = currencyRequestDto.from;
-                }
-                else
-                {
-                    //Set default currency if currency is incorrect
-                    currency.CurrencyFrom = currencySettings.CurrencyFrom;
-                }
-                if (!string.IsNullOrEmpty(defaltCurrency.CurrencyTo))
-                {
-                    defaltCurrency.CurrencyTo = currencyRequestDto.to;
-                }
-                else
-                {
-                    currency.CurrencyTo = currencySettings.CurrencyTo;
-                }
+                var CurrencyFromDefault = !string.IsNullOrEmpty(defaltCurrency.CurrencyFrom) ? defaltCurrency.CurrencyFrom = currencyRequestDto.from : currency.CurrencyFrom = currencySettings.CurrencyFrom;
+                
+                var CurrencyToDefault = !string.IsNullOrEmpty(defaltCurrency.CurrencyTo) ? defaltCurrency.CurrencyTo = currencyRequestDto.to : currency.CurrencyTo = currencySettings.CurrencyTo;
+                
 
                 //Update default currency
                 currencyRepository.Update(defaltCurrency);

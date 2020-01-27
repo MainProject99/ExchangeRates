@@ -19,10 +19,10 @@ namespace BusinessLogicLayer.DTO
         [Required]
         [JsonProperty("to")]
         public string to { get; set; }
-        [Required(ErrorMessage = "You should write Integer number to convert")]
+        [Required(ErrorMessage = "Please provide integer value.")]
         [JsonProperty("amount")]
         public int amount { get; set; }
-        [Required(ErrorMessage = "You should write json ")]
+        [Required(ErrorMessage = "Please provide json value.")]
         [JsonProperty("format")]
         public string format { get; set; }
 
