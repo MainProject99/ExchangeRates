@@ -22,6 +22,7 @@ namespace BusinessLogicLayer.Services
             userRepository = _userRepository;
             Database = _Database;
         }
+        public UserService() { }
         /// <summary>
         /// Check the user permission
         /// </summary>
@@ -35,7 +36,7 @@ namespace BusinessLogicLayer.Services
 
             var user = Database.Users.FirstOrDefault(x => x.Email == email);
 
-            // check if username exists     
+            // check if email exists     
             if (user == null)
                 return null;
 
@@ -113,7 +114,7 @@ namespace BusinessLogicLayer.Services
             userRepository.Update(user);
 
         }
-            private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             if (password == null)
                 throw new ArgumentNullException("password");
@@ -145,10 +146,10 @@ namespace BusinessLogicLayer.Services
 
             return true;
         }
-        public bool Exsist(string email) 
+        public bool Exist(string email) 
         {
-           return userRepository.Exist(email);
-
+           var result = userRepository.Exist(email);
+           return result;
         }
     }
 }

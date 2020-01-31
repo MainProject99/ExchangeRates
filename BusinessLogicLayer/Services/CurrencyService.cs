@@ -41,7 +41,7 @@ namespace BusinessLogicLayer.Services
         {
             userRepository = _userRepository;
             currencyRepository = _currency;
-            currencySettings = _currencySettings.Value ?? throw new ArgumentException(nameof(_currencySettings)); ;
+            currencySettings = _currencySettings.Value ?? throw new ArgumentException(nameof(_currencySettings)); 
             mapper = _mapper;
             httpContextAccessor = _httpContextAccessor;
         }
@@ -136,8 +136,6 @@ namespace BusinessLogicLayer.Services
                     }
                     #endregion
                 }
-
-
                 return currencyResponceDto;
             }
         }

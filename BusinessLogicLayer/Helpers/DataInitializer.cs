@@ -15,7 +15,7 @@ namespace BusinessLogicLayer.Helpers
         }
         public static void SeedCurrencyForUser(IUserService userService, ICurrencyRepository currencyRepository)
         {
-            if (!userService.Exsist("Admin@gmail.com"))
+            if (!userService.Exist("Admin@gmail.com"))
             {
                 User user = new  User();
                 user.Email = "Admin@gmail.com";
