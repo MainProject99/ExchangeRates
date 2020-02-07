@@ -113,7 +113,6 @@ namespace BusinessLogicLayer.Services
             }
 
 
-
             var urlConverter = new Uri(URL + $"?api_key={currencySettings.ApiKey}&format={currencyRequestDto.format}&from={currencyRequestDto.from }&to={currencyRequestDto.to}&amount={currencyRequestDto.amount}");
 
             using (HttpResponseMessage response = await client.PostAsync(urlConverter, null))
@@ -129,6 +128,7 @@ namespace BusinessLogicLayer.Services
                     if (currencyRequestDto.numberToLanguage == NumberToLanguageEnum.Engl)
                     {
                         currencyResponceDto.numberInString = NumberToWordsService.ConvertAmountToEng(currencyResponceDto.convert_result);
+                        SynthesisWordToAudioFileService.SynthesisToAudioFileAsync(currencyResponceDto.numberInString);
                     }
                     else if (currencyRequestDto.numberToLanguage == NumberToLanguageEnum.Ukr)
                     {

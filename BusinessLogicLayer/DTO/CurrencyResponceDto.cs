@@ -30,5 +30,6 @@ namespace BusinessLogicLayer.DTO
         public float convert_result { get; set; }
 
         public string numberInString { get; set; }
+        public string voiceRecord { get; set; }
     }
 }
