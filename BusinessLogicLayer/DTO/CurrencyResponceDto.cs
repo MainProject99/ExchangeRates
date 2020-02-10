@@ -9,26 +9,11 @@ namespace BusinessLogicLayer.DTO
     public class CurrencyResponceDto
     {
         [JsonProperty("time")]
-        public string time { get; set; }
-
-        [JsonProperty("timestamp")]
-        public int timestamp { get; set; }
-
-        [JsonProperty("from")]
-        public string from { get; set; }
-
-        [JsonProperty("to")]
-        public string to { get; set; }
+        public DateTime time { get; set; }
 
         [JsonProperty("amount")]
-        public int amount { get; set; }
-
-        [JsonProperty("rate")]
-        public float rate { get; set; }
-
-        [JsonProperty("convert_result")]
-        public float convert_result { get; set; }
-
+        public double amount { get; set; }
+        
         public string numberInString { get; set; }
     }
 }

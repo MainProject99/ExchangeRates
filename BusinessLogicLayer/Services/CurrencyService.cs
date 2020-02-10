@@ -34,7 +34,7 @@ namespace BusinessLogicLayer.Services
         private IMapper mapper;
         private readonly CurrencySettings currencySettings;
 
-        private const string URL = "https://api.iban.com/clients/api/currency/convert/";
+        private const string URL = "https://currency.labstack.com/api/v1/convert/";
 
         public CurrencyService(ICurrencyRepository _currency, IMapper _mapper, IUserRepository _userRepository,
                   IOptions<CurrencySettings> _currencySettings, IHttpContextAccessor _httpContextAccessor)
@@ -113,10 +113,12 @@ namespace BusinessLogicLayer.Services
             }
 
 
+            client.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", currencySettings.ApiKey);
 
-            var urlConverter = new Uri(URL + $"?api_key={currencySettings.ApiKey}&format={currencyRequestDto.format}&from={currencyRequestDto.from }&to={currencyRequestDto.to}&amount={currencyRequestDto.amount}");
-
-            using (HttpResponseMessage response = await client.PostAsync(urlConverter, null))
+            var urlConverter = new Uri(URL + $"{currencyRequestDto.amount}/{currencyRequestDto.from }/{currencyRequestDto.to}");
+           
+            using (HttpResponseMessage response = await client.GetAsync(urlConverter))
             {
                 CurrencyResponceDto currencyResponceDto = null;
                 using (HttpContent content = response.Content)
@@ -128,11 +130,11 @@ namespace BusinessLogicLayer.Services
 
                     if (currencyRequestDto.numberToLanguage == NumberToLanguageEnum.Engl)
                     {
-                        currencyResponceDto.numberInString = NumberToWordsService.ConvertAmountToEng(currencyResponceDto.convert_result);
+                        currencyResponceDto.numberInString = NumberToWordsService.ConvertAmountToEng(currencyResponceDto.amount);
                     }
                     else if (currencyRequestDto.numberToLanguage == NumberToLanguageEnum.Ukr)
                     {
-                        currencyResponceDto.numberInString = NumberToWordsService.ConvertAmountToUkr(currencyResponceDto.convert_result);
+                        currencyResponceDto.numberInString = NumberToWordsService.ConvertAmountToUkr(currencyResponceDto.amount);
                     }
                     #endregion
                 }

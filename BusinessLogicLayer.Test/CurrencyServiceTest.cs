@@ -83,12 +83,12 @@ namespace BusinessLogicLayer.Test
         [Test]
         public async Task PostClienConverterAsync_Currency_CurrencyResponceDto()
         {
-            var currencyRequestDto = new CurrencyRequestDto() { from = "USD", to = "EUR", format = "json", amount = 120 };                   
+            var currencyRequestDto = new CurrencyRequestDto() { from = "USD", to = "EUR", amount = 120 };                   
             
             mockCurrencyRepository.Setup(m => m.GetById(1)).Returns(currency);
             
             var httpClient = new HttpClient();
-            var expectedUri = new Uri(URL + $"?api_key=116677a09fe37ba01ebe3e35688ab41c&format={currencyRequestDto.format}&from={currencyRequestDto.from }&to={currencyRequestDto.to}&amount={currencyRequestDto.amount}");
+            var expectedUri = new Uri(URL + $"?api_key=116677a09fe37ba01ebe3e35688ab41c&format&from={currencyRequestDto.from }&to={currencyRequestDto.to}&amount={currencyRequestDto.amount}");
 
             HttpResponseMessage resulPost = await httpClient.PostAsync(expectedUri, null);
             HttpContent content = resulPost.Content;
