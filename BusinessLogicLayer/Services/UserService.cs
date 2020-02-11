@@ -22,7 +22,7 @@ namespace BusinessLogicLayer.Services
             userRepository = _userRepository;
             Database = _Database;
         }
-        public UserService() { }
+
         /// <summary>
         /// Check the user permission
         /// </summary>

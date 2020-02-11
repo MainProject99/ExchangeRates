@@ -31,11 +31,25 @@ namespace RESTfulAPIs.Controllers
         [HttpPost("PostToConvert")]
         public async Task<CurrencyResponceDto> PostClienConverterAsync(CurrencyRequestDto currencyRequestDto)
         {
-            var result = currencyService.PostClienConverterAsync(currencyRequestDto);
+            var result = currencyService.ConvertCurrency(currencyRequestDto);
             return await result;
         
         }
 
+        /// <summary>
+        /// Method for getting currency
+        /// </summary>
+        /// <returns>Currencies.</returns>
+        ///<response code="200">Client’s request was accepted successfully</response> 
+        ///<response code="404">There isn't default currency of current user</response> 
+
+        [HttpGet("GetCurrency")]
+        public async Task<RatesResponseDTO> GetCurrency()
+        {
+            var result =  await currencyService.GetCurencies();
+
+            return result;
+        }
         /// <summary>
         /// Method for getting default currency of current user
         /// </summary>
@@ -43,8 +57,8 @@ namespace RESTfulAPIs.Controllers
         ///<response code="200">Client’s request was accepted successfully</response> 
         ///<response code="404">There isn't default currency of current user</response> 
 
-        [HttpGet("GetCurrencyInfo")]
-        public IActionResult GetCurrencyInfo()
+        [HttpGet("GetDefaultCurrencyInfo")]
+        public IActionResult GetDefaultCurrencyInfo()
         {
             var result = currencyService.GetCurrencyDefaultInfo();
             if (result == null)
@@ -54,5 +68,6 @@ namespace RESTfulAPIs.Controllers
 
             return Ok(result);
         }
+
     }
 }

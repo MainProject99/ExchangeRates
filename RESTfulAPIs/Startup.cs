@@ -27,7 +27,7 @@ using System.Web.Http;
 using Microsoft.AspNetCore.Http;
 using System.Reflection;
 using System.IO;
-
+using BusinessLogicLayer.Hubs;
 namespace RESTfulAPIs
 {
     public class Startup
@@ -109,6 +109,9 @@ namespace RESTfulAPIs
             services.AddControllers();
             
             services.AddMvc();
+
+            services.AddSignalR();
+
             #region Swager settings
             services.AddSwaggerGen(c =>
             {
@@ -211,7 +214,8 @@ namespace RESTfulAPIs
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();               
+                endpoints.MapControllers();
+                endpoints.MapHub<CurencyRateHub>("/CurrencyRateHub");
             });
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.

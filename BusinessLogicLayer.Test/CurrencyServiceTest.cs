@@ -12,6 +12,7 @@ using NUnit.Framework;
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
@@ -88,7 +89,9 @@ namespace BusinessLogicLayer.Test
             mockCurrencyRepository.Setup(m => m.GetById(1)).Returns(currency);
             
             var httpClient = new HttpClient();
-            var expectedUri = new Uri(URL + $"?api_key=116677a09fe37ba01ebe3e35688ab41c&format&from={currencyRequestDto.from }&to={currencyRequestDto.to}&amount={currencyRequestDto.amount}");
+            httpClient.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer","Token");
+            var expectedUri = new Uri(URL + $"{currencyRequestDto.amount}/{currencyRequestDto.from }/{currencyRequestDto.to}");
 
             HttpResponseMessage resulPost = await httpClient.PostAsync(expectedUri, null);
             HttpContent content = resulPost.Content;
