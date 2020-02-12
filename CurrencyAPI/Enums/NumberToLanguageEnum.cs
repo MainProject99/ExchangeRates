@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace BusinessLogicLayer.DTO
+namespace CurrencyAPI
 {
     public enum NumberToLanguageEnum
     {

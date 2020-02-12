@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace BusinessLogicLayer.DTO
+namespace CurrencyAPI.ApiDTO
 {
     public class RatesResponseDTO
     {

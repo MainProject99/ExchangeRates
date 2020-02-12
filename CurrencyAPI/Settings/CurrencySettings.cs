@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace BusinessLogicLayer.Helpers
+namespace CurrencyAPI.Helpers
 {
     public class CurrencySettings
     {

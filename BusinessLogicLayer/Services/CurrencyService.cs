@@ -16,10 +16,14 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
-using BusinessLogicLayer.Helpers;
+using CurrencyAPI.Helpers;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.SignalR;
 using BusinessLogicLayer.Hubs;
+using BusinessLogicLayer.Helpers;
+using CurrencyAPI.Intefaces;
+using CurrencyAPI.ApiDTO;
+using CurrencyAPI;
 
 namespace BusinessLogicLayer.Services
 {
@@ -32,21 +36,22 @@ namespace BusinessLogicLayer.Services
         static readonly HttpClient client = new HttpClient();
         private readonly ICurrencyRepository currencyRepository;
         private readonly IUserRepository userRepository;
+        private readonly ICurrencyConvertAPI currencyConvertAPI;
         IHttpContextAccessor httpContextAccessor;
         private IMapper mapper;
         private readonly CurrencySettings currencySettings;
         protected readonly IHubContext<CurencyRateHub> hubCurrencyRateContext;
-        private const string URL = "https://currency.labstack.com/api/v1/";
-
         public CurrencyService(ICurrencyRepository _currency, IMapper _mapper, IUserRepository _userRepository,
-                  IOptions<CurrencySettings> _currencySettings, IHttpContextAccessor _httpContextAccessor, IHubContext<CurencyRateHub> _hubCurrencyRateContext)
+                  IOptions<CurrencySettings> _currencySettings, IHttpContextAccessor _httpContextAccessor, 
+                  IHubContext<CurencyRateHub> _hubCurrencyRateContext, ICurrencyConvertAPI _currencyConvertAPI)
         {
             userRepository = _userRepository;
             currencyRepository = _currency;
-            currencySettings = _currencySettings.Value ?? throw new ArgumentException(nameof(_currencySettings)); 
+            currencySettings = _currencySettings.Value ?? throw new ArgumentException(nameof(_currencySettings));
             mapper = _mapper;
             httpContextAccessor = _httpContextAccessor;
             hubCurrencyRateContext = _hubCurrencyRateContext;
+            currencyConvertAPI = _currencyConvertAPI;
         }
 
         /// <summary>
@@ -73,23 +78,11 @@ namespace BusinessLogicLayer.Services
         /// <returns>RatesResponseDTO</returns>
         public async Task<RatesResponseDTO> GetCurencies()
         {
-            client.DefaultRequestHeaders.Authorization =
-               new AuthenticationHeaderValue("Bearer", currencySettings.ApiKey);
-            var urlConverter = new Uri(URL + $"rates");
-
-            using (HttpResponseMessage response = await client.GetAsync(urlConverter))
-            {
-                RatesResponseDTO ratesResponceDto = null;
-                using (HttpContent content = response.Content)
-                {
-                    string mycontent = await content.ReadAsStringAsync();
-
-                    ratesResponceDto = JsonConvert.DeserializeObject<RatesResponseDTO>(mycontent);
-
-                    await hubCurrencyRateContext.Clients.All.SendAsync("UpdateRates",ratesResponceDto.rates.Keys, ratesResponceDto.rates.Values);
-                }
-                return ratesResponceDto;
-            }
+            var ratesResponseDTO = await currencyConvertAPI.GetCurrencyAPI();
+                await hubCurrencyRateContext.Clients.All.SendAsync("UpdateRates",ratesResponseDTO.rates.Keys, ratesResponseDTO.rates.Values);
+                
+            return ratesResponseDTO;
+            
         }
         /// <summary>
         /// Transform CurrencyRequestDto <paramref name="currencyRequestDto"/> to Currency and insert it to Currency table of DB,
@@ -97,7 +90,7 @@ namespace BusinessLogicLayer.Services
         ///This method convert value, and convert result to string
         /// </summary>
         /// <param name="currencyRequestDto">
-        /// Should contain not null or empty data .
+        /// Should contain not null or empty data.
         /// </param>
         /// <returns>Converted data</returns>
 
@@ -137,34 +130,20 @@ namespace BusinessLogicLayer.Services
                 currencyRepository.Update(defaltCurrency);
             }
 
+            var currencyAmountResult = await currencyConvertAPI.ConvertCurrencies(currencyRequestDto);
 
-            client.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", currencySettings.ApiKey);
 
-            var urlConverter = new Uri(URL + $"convert/{currencyRequestDto.amount}/{currencyRequestDto.from }/{currencyRequestDto.to}");
-           
-            using (HttpResponseMessage response = await client.GetAsync(urlConverter))
+            if (currencyRequestDto.numberToLanguage == NumberToLanguageEnum.Engl)
             {
-                CurrencyResponceDto currencyResponceDto = null;
-                using (HttpContent content = response.Content)
-                {
-                    string mycontent = await content.ReadAsStringAsync();
-
-                    currencyResponceDto = JsonConvert.DeserializeObject<CurrencyResponceDto>(mycontent);
-                    #region Translate Number to Words
-
-                    if (currencyRequestDto.numberToLanguage == NumberToLanguageEnum.Engl)
-                    {
-                        currencyResponceDto.numberInString = NumberToWordsService.ConvertAmountToEng(currencyResponceDto.amount);
-                    }
-                    else if (currencyRequestDto.numberToLanguage == NumberToLanguageEnum.Ukr)
-                    {
-                        currencyResponceDto.numberInString = NumberToWordsService.ConvertAmountToUkr(currencyResponceDto.amount);
-                    }
-                    #endregion
-                }
-                return currencyResponceDto;
+                currencyAmountResult.numberInString = NumberToWordsService.ConvertAmountToEng(currencyAmountResult.amount);
             }
+            else if (currencyRequestDto.numberToLanguage == NumberToLanguageEnum.Ukr)
+            {
+                currencyAmountResult.numberInString = NumberToWordsService.ConvertAmountToUkr(currencyAmountResult.amount);
+            }
+
+            return currencyAmountResult;
+            
         }
 
     }

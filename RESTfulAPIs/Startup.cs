@@ -28,6 +28,10 @@ using Microsoft.AspNetCore.Http;
 using System.Reflection;
 using System.IO;
 using BusinessLogicLayer.Hubs;
+using CurrencyAPI.Helpers;
+using CurrencyAPI.Intefaces;
+using CurrencyAPI.CurrencyRateAPI;
+
 namespace RESTfulAPIs
 {
     public class Startup
@@ -94,7 +98,7 @@ namespace RESTfulAPIs
             // configure DI for application services
             services.AddScoped<IUserService,UserService>();
             services.AddScoped<ICurrencyService, CurrencyService>();
-
+            services.AddScoped<ICurrencyConvertAPI, CurrencyConvertAPI>();
             // configure DI for application Repositories
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<IUserRepository, UserRepository>();
@@ -102,7 +106,7 @@ namespace RESTfulAPIs
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
-            services.Configure<CurrencySettings>(Configuration.GetSection("CurrencySettings"));
+            services.Configure<CurrencySettings>(Configuration.GetSection("CurrencySettings"));            
 
             #endregion
 

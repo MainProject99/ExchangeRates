@@ -4,6 +4,7 @@ using BusinessLogicLayer.DTO;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using CurrencyAPI.ApiDTO;
 
 namespace RESTfulAPIs.MappingProfile
 {
