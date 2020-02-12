@@ -1,15 +1,18 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29609.76
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RESTfulAPIs", "RESTfulAPIs\RESTfulAPIs.csproj", "{881CC4FA-76A0-4197-A11F-0AE1908D4CF7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RESTfulAPIs", "RESTfulAPIs\RESTfulAPIs.csproj", "{881CC4FA-76A0-4197-A11F-0AE1908D4CF7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model", "Model\Model.csproj", "{BE8F2A0C-C8FE-4B16-8841-51C2D3C77DF5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Model", "Model\Model.csproj", "{BE8F2A0C-C8FE-4B16-8841-51C2D3C77DF5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DLL", "DLL\DLL.csproj", "{DA0E45FE-7593-4777-9DC1-353E9FA12D7F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccessLayer", "DataAccessLayer\DataAccessLayer.csproj", "{DA0E45FE-7593-4777-9DC1-353E9FA12D7F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLL", "BLL\BLL.csproj", "{938DAA0D-C32B-4E8B-A78B-3F75EC9E0049}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BusinessLogicLayer", "BusinessLogicLayer\BusinessLogicLayer.csproj", "{938DAA0D-C32B-4E8B-A78B-3F75EC9E0049}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BusinessLogicLayer.Test", "BusinessLogicLayer.Test\BusinessLogicLayer.Test.csproj", "{11D58B10-DD29-45AC-8E69-C72EBA709DDA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurrencyAPI", "CurrencyAPI\CurrencyAPI.csproj", "{D081D5E6-A295-417E-AE68-B7C89541F1A7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +36,14 @@ Global
 		{938DAA0D-C32B-4E8B-A78B-3F75EC9E0049}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{938DAA0D-C32B-4E8B-A78B-3F75EC9E0049}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{938DAA0D-C32B-4E8B-A78B-3F75EC9E0049}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11D58B10-DD29-45AC-8E69-C72EBA709DDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11D58B10-DD29-45AC-8E69-C72EBA709DDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11D58B10-DD29-45AC-8E69-C72EBA709DDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11D58B10-DD29-45AC-8E69-C72EBA709DDA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D081D5E6-A295-417E-AE68-B7C89541F1A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D081D5E6-A295-417E-AE68-B7C89541F1A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D081D5E6-A295-417E-AE68-B7C89541F1A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D081D5E6-A295-417E-AE68-B7C89541F1A7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

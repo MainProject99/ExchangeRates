@@ -2,24 +2,20 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace Model.Models
+namespace BusinessLogicLayer.DTO
 {
-    public class User
+    public class UpdateDto
     {
-        public int Id { get; set; }
         [Required]
         [Email]
         public string Email { get; set; }
-        
         public string Name { get; set; }
+        
         [Required]
-        public string  Password { get; set; }
-
-        public byte[] PasswordHash { get; set; }
-        public byte[] PasswordSalt { get; set; }
-
+        public string Password { get; set; }
 
     }
 }
