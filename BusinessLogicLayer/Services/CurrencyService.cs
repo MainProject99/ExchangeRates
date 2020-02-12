@@ -136,6 +136,7 @@ namespace BusinessLogicLayer.Services
             if (currencyRequestDto.numberToLanguage == NumberToLanguageEnum.Engl)
             {
                 currencyAmountResult.numberInString = NumberToWordsService.ConvertAmountToEng(currencyAmountResult.amount);
+                SynthesisWordToAudioFileService.SynthesisToAudioFileAsync(currencyAmountResult.numberInString);
             }
             else if (currencyRequestDto.numberToLanguage == NumberToLanguageEnum.Ukr)
             {

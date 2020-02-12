@@ -1,8 +1,13 @@
 ﻿using BusinessLogicLayer.DTO;
 using BusinessLogicLayer.Helpers;
+using BusinessLogicLayer.Hubs;
 using BusinessLogicLayer.Services;
+using CurrencyAPI.ApiDTO;
+using CurrencyAPI.CurrencyRateAPI;
+using CurrencyAPI.Helpers;
 using DataAccessLayer.IRepositories;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Options;
 using Model.Models;
 using Moq;
@@ -25,10 +30,12 @@ namespace BusinessLogicLayer.Test
 
         private CurrencyService currencyService;
         private Currency currency;
+        private CurrencyConvertAPI _currencyConvertAPI;
         private Mock<ICurrencyRepository> mockCurrencyRepository;
         private Mock<IUserRepository> mockUserRepository;
         private Mock<IOptions<CurrencySettings>> currencySettingsOptions;
         private Mock<IHttpContextAccessor> mockHttpContextAccessor;
+        private Mock<IHubContext<CurencyRateHub>> _hubCurrencyRateContext;
         private const string URL = "https://api.iban.com/clients/api/currency/convert/";
 
         [SetUp]
@@ -37,6 +44,7 @@ namespace BusinessLogicLayer.Test
             base.Initialize();
             mockCurrencyRepository = new Mock<ICurrencyRepository>();
             mockUserRepository = new Mock<IUserRepository>();
+            _hubCurrencyRateContext = new Mock<IHubContext<CurencyRateHub>>();
             CurrencySettings currencySettings = new CurrencySettings()
             { CurrencyFrom = "Usd", CurrencyTo = "EUR", ApiKey = "116677a09fe37ba01ebe3e35688ab41c" };
             currencySettingsOptions = new Mock<IOptions<CurrencySettings>>();
@@ -48,7 +56,7 @@ namespace BusinessLogicLayer.Test
                .Returns(new Claim("Id", "1"));
 
             currencyService = new CurrencyService(mockCurrencyRepository.Object, mockMapper.Object,
-                mockUserRepository.Object, currencySettingsOptions.Object, mockHttpContextAccessor.Object);
+                mockUserRepository.Object, currencySettingsOptions.Object, mockHttpContextAccessor.Object, _hubCurrencyRateContext.Object, _currencyConvertAPI);
             currency = new Currency() { Id = 1, UserId = 1, CurrencyFrom = "USD", CurrencyTo = "EUR" };
 
             TestContext.WriteLine("Overrided");
@@ -100,7 +108,7 @@ namespace BusinessLogicLayer.Test
             var resulThatExpected = JsonConvert.DeserializeObject<CurrencyResponceDto>(mycontent);
             var resultCheck = resulThatExpected as CurrencyResponceDto;
 
-            var result = currencyService.PostClienConverterAsync(currencyRequestDto);
+            var result = currencyService.ConvertCurrency(currencyRequestDto);
  
             Assert.That(resulThatExpected, Is.Not.Null);
             Assert.NotNull(result);
